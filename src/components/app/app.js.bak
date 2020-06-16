@@ -1,0 +1,224 @@
+import React  from 'react';
+import Header from '../header';
+import useData from '../../services/dataServices.js';
+
+import './app.css';
+
+// props: value
+const Player = ({ value }) => (
+  <tr>
+    <td>{value.position}</td>
+    <td>{value.number}</td>
+    <td>{value.name}</td>
+  </tr>
+);
+
+const App = () => {
+  const [
+    totalLogs,
+    matchData,
+    players,
+    refresMatchData
+  ] = useData();
+
+  let mId = 1;
+  let team1Title = "";
+  let team2Title = "";
+
+  const tournamentInfo = matchData.map((item) => {
+    const {...matchData} = item;
+    team1Title = item.team1;
+    team2Title = item.team2;
+
+    return (
+      <div key = {mId++}>
+        <div className="toast-header">
+          <strong className="mr-auto">Текстовая онлайн трансляция матча {item.team1} против {item.team2}</strong>
+        </div>
+        <div className="toast-body">
+          <div className="row">
+            <div className="col-lg-1" />
+            <div className="col-lg-5 team-align">
+              <div>
+                <h1>{item.team1}</h1>
+              </div>
+              <div>
+              <img className="item-image"
+                src={item.team1Logo}
+                alt="team1"/>
+              </div>
+            </div>
+            <div className="col-lg-5 team-align">
+              <div>
+                <h1>{item.team2}</h1>
+              </div>
+              <div>
+              <img className="item-image"
+                src={item.team2Logo}
+                alt="team2"/>
+              </div>
+            </div>
+            <div className="col-lg-1" />
+          </div>
+          <div className="team-align">
+            <h2> {item.tournament} </h2>
+            <h4> Стадион: {item.stadium} ({item.city}) </h4>
+            <h4> {item.dataTime} </h4>
+          </div>
+        </div>
+      </div>
+    );
+  });
+
+  const logsMatch = totalLogs.map((item) => {
+    const {...totalLogs} = item;
+
+    let iconClass = "";
+    if(item.type === "goal"){
+      iconClass = "fa fa-bolt icons-style";
+    } else if(item.type === "dangerousMoment"){
+      iconClass = "fa fa-fire icons-style";
+    } else if(item.type === "yellowCard"){
+      iconClass = "fa fa-flag";
+    } else if(item.type === "replacePlayer"){
+      iconClass = "fa fa-share";
+    } else if(item.type === "redCard"){
+      iconClass = "fa fa-flag";
+    } else {
+      iconClass = "fa fa-info";
+    }
+    return (
+      <div key = {mId++} className="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+        <div className="toast-header">
+          <strong className="mr-auto"><i className={iconClass} /></strong>
+          <small>{item.time} минут</small>
+        </div>
+        <div className="toast-body">
+          {item.description}
+        </div>
+      </div>
+    );
+  });
+
+
+  // // const lineups1 = lineups1T.map((item) => {
+  // //   const {...lineups1T} = item;
+  // //   return (
+  // //     <tr key = {mId++}>
+  // //       <td>{item.position}</td>
+  // //       <td>{item.number}</td>
+  // //       <td>{item.name}</td>
+  // //     </tr>
+  // //   );
+  // // });
+
+  // const spareLineups1 = spareLineups1T.map((item) => {
+  //   const {...spareLineups1T} = item;
+  //   return (
+  //     <tr key = {mId++}>
+  //       <td>{item.position}</td>
+  //       <td>{item.number}</td>
+  //       <td>{item.name}</td>
+  //     </tr>
+  //   );
+  // });
+
+  // const lineups2 = lineups2T.map((item) => {
+  //   const {...lineups2T} = item;
+  //   return (
+  //     <tr key = {mId++}>
+  //       <td>{item.position}</td>
+  //       <td>{item.number}</td>
+  //       <td>{item.name}</td>
+  //     </tr>
+  //   );
+  // });
+
+  // const spareLineups2 = spareLineups2T.map((item) => {
+  //   const {...spareLineups2T} = item;
+  //   return (
+  //     <tr key = {mId++}>
+  //       <td>{item.position}</td>
+  //       <td>{item.number}</td>
+  //       <td>{item.name}</td>
+  //     </tr>
+  //   );
+  // });
+
+  return (
+    <div>
+      <Header />
+      <div className="row">
+        <div className="col-lg-1">
+        </div>
+        <div className="col-lg-8">
+          <div className="toast show" aria-live="assertive" aria-atomic="true">
+            {tournamentInfo}
+          </div>
+          {logsMatch}
+        </div>
+        <div className="col-lg-3">
+          <div className="table-responsive">
+            <table className="table head-table-style">
+              <thead>
+                <tr>
+                  <th><h3>{team1Title}</h3></th>
+                </tr>
+              </thead>
+              <thead>
+                <tr>
+                  <th><h5 className="font-weight-bold">Основной состав</h5></th>
+                </tr>
+              </thead>
+              <tbody>
+                {players.team1.players.map(player => (
+                  <Player value={player} key={player.number} />
+                ))}
+              </tbody>
+              <thead>
+                <tr>
+                  <th><h5 className="font-weight-bold">Запасные игроки</h5></th>
+                </tr>
+              </thead>
+              <tbody>
+                {players.team1.spare.map(player => (
+                  <Player value={player} key={player.number} />
+                ))}
+              </tbody>
+            </table>
+            <table className="table head-table-style">
+              <thead>
+                <tr>
+                  <th className="table-title-dicoration"><h3>{team2Title}</h3></th>
+                </tr>
+              </thead>
+              <thead>
+                <tr>
+                  <th><h5 className="font-weight-bold">Основной состав</h5></th>
+                </tr>
+              </thead>
+              <tbody>
+                {players.team2.players.map(player => (
+                  <Player value={player} key={player.number} />
+                ))}
+              </tbody>
+              <thead>
+                <tr>
+                  <th><h5 className="font-weight-bold">Запасные игроки</h5></th>
+                </tr>
+              </thead>
+              <tbody>
+                {players.team2.spare.map(player => (
+                  <Player value={player} key={player.number} />
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  )
+};
+
+export default App;

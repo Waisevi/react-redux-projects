@@ -1,0 +1,21 @@
+.toast {
+  max-width: 100%;
+  margin-top: 20px;
+}
+
+.team-align {
+  text-align: center;
+}
+
+.table-title {
+  margin-top: 10px;
+  padding-left: 10px;
+}
+
+.table thead th {
+  border-bottom: none;
+}
+
+.icons-style {
+  color: red;
+}
