@@ -1,0 +1,10 @@
+.note-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.notes-date {
+    color: grey;
+    font-size: 12px;
+}
